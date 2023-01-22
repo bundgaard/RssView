@@ -1,0 +1,11 @@
+namespace RssView
+{
+    [bindable]
+    [default_interface]
+    runtimeclass Item 
+    {
+        Item(String title, String content);
+        String Title{ get; };
+        String Content{ get; };
+    }
+}

@@ -1,0 +1,11 @@
+import "ItemViewModel.idl";
+
+namespace RssView
+{
+    [default_interface]
+    runtimeclass MainPage : Windows.UI.Xaml.Controls.Page
+    {
+        MainPage();
+        ItemViewModel RssItemsViewModel{ get; };
+    }
+}

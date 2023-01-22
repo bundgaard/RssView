@@ -1,0 +1,12 @@
+import "item.idl";
+
+namespace RssView
+{
+    [bindable]
+    [default_interface]
+    runtimeclass ItemViewModel 
+    {
+        ItemViewModel();
+        Windows.Foundation.Collections.IObservableVector<Item> Items{ get; };
+    }
+}
