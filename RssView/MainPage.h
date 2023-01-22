@@ -2,6 +2,7 @@
 
 #include "MainPage.g.h"
 #include "ItemViewModel.h"
+#include <winrt/Windows.Data.Json.h>
 
 namespace winrt::RssView::implementation
 {

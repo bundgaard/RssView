@@ -15,11 +15,18 @@
         </StackPanel>
         <ListBox 
             x:Name="rssItems"
-            ItemsSource="{x:Bind RssItemsViewModel.Items}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            Width="350"
+            MaxHeight="250"
+            ItemsSource="{x:Bind RssItemsViewModel.Items}" 
+            ScrollViewer.VerticalScrollBarVisibility="Auto" 
+            ScrollViewer.VerticalScrollMode="Auto"
+            Margin="20,40,20,20">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="local:Item">
                     <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{x:Bind Title, Mode=OneWay}"></TextBlock>                        
+                    <TextBlock Text="{x:Bind Title, Mode=OneWay}" Margin="10,10,40,0" HorizontalAlignment="Left"></TextBlock>      
+                       
+                        <PersonPicture ProfilePicture="{x:Bind Content, Mode=OneWay}" HorizontalAlignment="Right"></PersonPicture>
                     </StackPanel>
                     
                     
