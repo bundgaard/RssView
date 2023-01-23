@@ -13,7 +13,7 @@
             <TextBox 
                 FontSize="16"
                 x:Name="rssURL" 
-                PlaceholderText="RSS URL" 
+                PlaceholderText="JSON URL" 
                 Width="300" 
                 KeyUp="KeyUp_OnEnter"
                 RelativePanel.LeftOf="myButton">
