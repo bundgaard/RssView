@@ -3,11 +3,22 @@
 #include "MainPage.g.h"
 #include "ItemViewModel.h"
 #include <winrt/Windows.Data.Json.h>
+#include <winrt/Windows.Web.Syndication.h>
+#include <winrt/Windows.Web.Http.h>
+#include <winrt/Windows.UI.Xaml.Input.h>
+
+#include <winrt/Windows.UI.Xaml.Media.Imaging.h>
+
 
 namespace winrt::RssView::implementation
 {
 	struct MainPage : MainPageT<MainPage>
 	{
+	private:
+		
+		RssView::ItemViewModel m_items{ nullptr };
+
+	public:
 		MainPage()
 		{
 			m_items = make<RssView::implementation::ItemViewModel>();
@@ -20,10 +31,13 @@ namespace winrt::RssView::implementation
 
 
 		Windows::Foundation::IAsyncAction ClickHandler(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
+		Windows::Foundation::IAsyncAction DoFetch();
+
+		void rssItems_ItemClick(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::Controls::ItemClickEventArgs const& e);
+		Windows::Foundation::IAsyncAction KeyUp_OnEnter(winrt::Windows::Foundation::IInspectable const& sender, ::winrt::Windows::UI::Xaml::Input::KeyRoutedEventArgs const& e);
 
 
-	private:
-		RssView::ItemViewModel m_items{ nullptr };
+
 	};
 }
 

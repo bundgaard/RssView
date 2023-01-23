@@ -2,10 +2,11 @@ namespace RssView
 {
     [bindable]
     [default_interface]
-    runtimeclass Item 
+    runtimeclass Item : Windows.UI.Xaml.Data.INotifyPropertyChanged
     {
         Item(String title, String content);
         String Title{ get; };
         String Content{ get; };
+        
     }
 }

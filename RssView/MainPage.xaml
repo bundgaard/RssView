@@ -8,32 +8,76 @@
     mc:Ignorable="d">
 
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="40,40,120,0">
-        
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBox x:Name="rssURL" PlaceholderText="RSS URL" Width="300"/>
-        <Button x:Name="myButton" Click="ClickHandler">Click Me</Button>    
-        </StackPanel>
-        <ListBox 
+
+        <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBox 
+                FontSize="16"
+                x:Name="rssURL" 
+                PlaceholderText="RSS URL" 
+                Width="300" 
+                KeyUp="KeyUp_OnEnter"
+                RelativePanel.LeftOf="myButton">
+
+            </TextBox>
+            <Button 
+                x:Name="myButton" 
+                Click="ClickHandler" 
+                RelativePanel.AlignRightWithPanel="True"
+                TabIndex="0"
+                >Search</Button>
+            <ProgressBar 
+                x:Name="LoadProgressIndicator" 
+                Margin="0,-10,0,0"
+                IsIndeterminate="True"
+                Visibility="Collapsed" 
+                RelativePanel.Below="myButton"/>
+        </RelativePanel>
+        <ListView 
             x:Name="rssItems"
             Width="350"
             MaxHeight="250"
             ItemsSource="{x:Bind RssItemsViewModel.Items}" 
+            IsItemClickEnabled="True"
+            ItemClick="rssItems_ItemClick"
             ScrollViewer.VerticalScrollBarVisibility="Auto" 
             ScrollViewer.VerticalScrollMode="Auto"
             Margin="20,40,20,20">
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="local:Item">
-                    <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{x:Bind Title, Mode=OneWay}" Margin="10,10,40,0" HorizontalAlignment="Left"></TextBlock>      
-                       
-                        <PersonPicture ProfilePicture="{x:Bind Content, Mode=OneWay}" HorizontalAlignment="Right"></PersonPicture>
-                    </StackPanel>
-                    
-                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock 
+                            x:Name="TitleTextBlock" 
+                            Text="{x:Bind Title, Mode=OneWay}" 
+                            Margin="10,10,40,0" 
+                            
+                            HorizontalAlignment="Stretch"/>
+
+                        <PersonPicture x:Name="PhotoBlock"                                       
+                                       DisplayName="{x:Bind Title, Mode=OneWay}"
+                                       ProfilePicture="{x:Bind Content, Mode=OneWay}" 
+                                       HorizontalAlignment="Stretch" 
+                                       Grid.Column="1"
+                                       Margin="10,0,20,0"/>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
+
+        </ListView>
+        <ScrollViewer 
+            MaxHeight="640" 
+            MaxWidth="480" 
             
-        </ListBox>
-        
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto" 
+            HorizontalScrollMode="Auto" 
+            HorizontalScrollBarVisibility="Auto">
+
+            <Image x:Name="BigImage" Visibility="Collapsed" MaxHeight="640" MaxWidth="480"/>
+        </ScrollViewer>
     </StackPanel>
 </Page>
