@@ -51,7 +51,7 @@ namespace winrt::RssView::implementation
 			auto respString{ co_await httpClient.GetStringAsync(uri) };
 
 			auto json = Windows::Data::Json::JsonObject::Parse(respString);
-			try
+			try // TODO: fix the try/catch as it is not catching at the proper moment...
 			{
 				auto data = json.GetNamedObject(L"data");
 
