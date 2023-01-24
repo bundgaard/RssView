@@ -9,7 +9,7 @@
 
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="40,40,120,0">
 
-        <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <RelativePanel HorizontalAlignment="Left" VerticalAlignment="Center">
             <TextBox 
                 FontSize="16"
                 x:Name="rssURL" 
@@ -17,14 +17,9 @@
                 Width="300" 
                 KeyUp="KeyUp_OnEnter"
                 RelativePanel.LeftOf="myButton">
-
             </TextBox>
-            <Button 
-                x:Name="myButton" 
-                Click="ClickHandler" 
-                RelativePanel.AlignRightWithPanel="True"
-                TabIndex="0"
-                >Search</Button>
+            <Button x:Name="myButton" Click="ClickHandler" RelativePanel.LeftOf="clearButton" TabIndex="1">Search</Button>
+            <Button x:Name="clearButton" Click="ClearHandler" RelativePanel.AlignRightWithPanel="true" TabIndex="2" >Clear</Button>
             <ProgressBar 
                 x:Name="LoadProgressIndicator" 
                 Margin="0,-10,0,0"
@@ -54,13 +49,13 @@
                             x:Name="TitleTextBlock" 
                             Text="{x:Bind Title, Mode=OneWay}" 
                             Margin="10,10,40,0" 
-                            
+                            TextWrapping="WrapWholeWords"
                             HorizontalAlignment="Stretch"/>
 
                         <PersonPicture x:Name="PhotoBlock"                                       
                                        DisplayName="{x:Bind Title, Mode=OneWay}"
                                        ProfilePicture="{x:Bind Content, Mode=OneWay}" 
-                                       HorizontalAlignment="Stretch" 
+                                       HorizontalAlignment="Right" 
                                        Grid.Column="1"
                                        Margin="10,0,20,0"/>
                     </Grid>
@@ -69,9 +64,7 @@
 
         </ListView>
         <ScrollViewer 
-            MaxHeight="640" 
-            MaxWidth="480" 
-            
+                       
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto" 
             HorizontalScrollMode="Auto" 
