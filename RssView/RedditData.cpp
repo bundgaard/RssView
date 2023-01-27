@@ -1,6 +1,25 @@
 #include "pch.h"
 #include "RedditModel.h"
 
+#define GET_NAMED_STRING(obj, name)				\
+	if(obj.HasKey(##name)) {					\
+		m##name = (obj.GetNamedString(##name)); \
+	}
+#define GET_NAMED_OBJECT(obj, name)				\
+	if(obj.HasKey(##name))						\
+	{											\
+		m##name = (obj.GetNamedObject(##name)); \
+	}
+#define GET_NAMED_ARRAY(obj, name)				\
+	if(obj.HasKey(##name))						\
+	{											\
+		 m##name = (obj.GetNamedArray(##name)); \
+	}
+
+
+#define CATCH_LOG(output) catch(...) { OutputDebugStringW(output); }
+
+
 namespace Woo
 {
 
@@ -8,6 +27,7 @@ namespace Woo
 	constexpr wchar_t _author[] = L"author";
 	constexpr wchar_t _url[] = L"url";
 	constexpr wchar_t _children[] = L"children";
+	constexpr wchar_t _name[] = L"name";
 
 
 	using namespace winrt;
@@ -22,25 +42,19 @@ namespace Woo
 			auto children = obj.GetNamedArray(_children);
 			for (auto const& child : children)
 			{
-				auto childObj = child.GetObject();
-				m_children.push_back(RedditModel(childObj.Stringify()));
+				try
+				{
+					auto childObj = child.GetObject();
+					m_children.push_back(RedditModel(childObj.Stringify()));
+				}
+				CATCH_LOG(L"failed to find object in children");
+
 			}
 		}
-		if (obj.HasKey(_author))
-		{
-			m_author = (obj.GetNamedString(_author));
-		}
 
-		if (obj.HasKey(_url))
-		{
-			m_url = (obj.GetNamedString(_url));
-		}
-
-		if (obj.HasKey(_title))
-		{
-			m_title = (obj.GetNamedString(_title));
-		}
-
+		GET_NAMED_STRING(obj, _author);
+		GET_NAMED_STRING(obj, _url);
+		GET_NAMED_STRING(obj, _title);
 
 
 	}
