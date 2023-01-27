@@ -49,6 +49,7 @@ namespace winrt::RssView::implementation
 		rssURL().Text(L"");
 		co_return;
 	}
+
 	IAsyncAction MainPage::DoFetch()
 	{
 		LoadProgressIndicator().Visibility(Windows::UI::Xaml::Visibility::Visible);
@@ -74,6 +75,7 @@ namespace winrt::RssView::implementation
 			{
 				auto data = child.Data();
 				auto item = make<RssView::implementation::Item>(data.Title().c_str(), data.Url().c_str());
+				
 
 				items.Append(item);
 			}
@@ -96,10 +98,7 @@ namespace winrt::RssView::implementation
 	void MainPage::rssItems_ItemClick(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::Controls::ItemClickEventArgs const& e)
 	{
 		auto foo = e.ClickedItem().as<RssView::Item>();
-		OutputDebugString(foo.Title().c_str());
-		OutputDebugStringW(L"\n");
-		OutputDebugStringW(foo.Content().c_str());
-		OutputDebugStringW(L"\n");
+		
 		if (foo != nullptr)
 		{
 			Windows::UI::Xaml::Media::Imaging::BitmapImage bitmap = Windows::UI::Xaml::Media::Imaging::BitmapImage{};
