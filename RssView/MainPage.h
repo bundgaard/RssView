@@ -1,13 +1,11 @@
 ﻿#pragma once
 
+#include "pch.h"
 #include "MainPage.g.h"
 #include "ItemViewModel.h"
-#include <winrt/Windows.Data.Json.h>
-#include <winrt/Windows.Web.Syndication.h>
-#include <winrt/Windows.Web.Http.h>
-#include <winrt/Windows.UI.Xaml.Input.h>
-
-#include <winrt/Windows.UI.Xaml.Media.Imaging.h>
+#include <winrt/Windows.System.h>
+#include <ppltasks.h>
+#include <pplawait.h>
 
 
 namespace winrt::RssView::implementation
@@ -37,7 +35,7 @@ namespace winrt::RssView::implementation
 		void rssItems_ItemClick(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::Controls::ItemClickEventArgs const& e);
 		Windows::Foundation::IAsyncAction KeyUp_OnEnter(winrt::Windows::Foundation::IInspectable const& sender, ::winrt::Windows::UI::Xaml::Input::KeyRoutedEventArgs const& e);
 
-
+		
 
 	};
 }

@@ -1,21 +1,31 @@
 ﻿#include "pch.h"
 #include "MainPage.h"
 #include "MainPage.g.cpp"
-#include <winrt/Windows.System.h>
-#include <ppltasks.h>
+#include <winrt/Windows.UI.Xaml.Controls.h>
+#include <winrt/Microsoft.Web.WebView2.Core.h>
 
-using namespace concurrency;
+#include "RedditModel.h"
 
-using namespace winrt;
-using namespace Windows::UI::Xaml;
-using namespace Windows::Foundation;
-using namespace Windows::Web::Syndication;
-using namespace Windows::Web::Http;
-using namespace Windows::Data::Json;
-using namespace Windows::UI::Xaml::Input;
-using namespace Windows::UI::Xaml::Media::Imaging;
-using namespace Windows::System;
-using namespace RssView;
+namespace winrt::RssView::implementation
+{
+	using namespace winrt;
+	using namespace concurrency;
+
+
+	using namespace Windows::Foundation;
+	using namespace Windows::System;
+
+	using namespace Windows::UI::Xaml;
+	using namespace Windows::Web::Syndication;
+	using namespace Windows::Web::Http;
+	using namespace Windows::Data::Json;
+	using namespace Windows::UI::Xaml::Input;
+	using namespace Windows::UI::Xaml::Media::Imaging;
+
+	using namespace RssView;
+	using namespace Woo;
+
+}
 
 namespace winrt::RssView::implementation
 {
@@ -36,72 +46,50 @@ namespace winrt::RssView::implementation
 	{
 		RssItemsViewModel().Items().Clear();
 		BigImage().Visibility(Windows::UI::Xaml::Visibility::Collapsed);
+		rssURL().Text(L"");
 		co_return;
 	}
-
 	IAsyncAction MainPage::DoFetch()
 	{
 		LoadProgressIndicator().Visibility(Windows::UI::Xaml::Visibility::Visible);
 		auto url = rssURL().Text();
-		if (!url.empty()) // TODO: we can check if rss or json... or have a selection box the user can select them selves.
+		if (url.empty()) // TODO: we can check if rss or json... or have a selection box the user can select them selves.
 		{
-
-			Uri uri{ url.c_str() };
-			Windows::Web::Http::HttpClient httpClient;
-			auto respString{ co_await httpClient.GetStringAsync(uri) };
-
-			auto json = Windows::Data::Json::JsonObject::Parse(respString);
-			try // TODO: fix the try/catch as it is not catching at the proper moment...
-			{
-				auto data = json.GetNamedObject(L"data");
-
-				auto children = data.GetNamedArray(L"children");
-				auto items = RssItemsViewModel().Items();
-				items.Clear();
-				for (auto const& child : children)
-				{
-					try {
-						auto obj = child.GetObject();
-						auto data = obj.GetNamedObject(L"data");
-						auto title = data.GetNamedString(L"title");
-						auto overridden_url = data.GetNamedString(L"url_overridden_by_dest");
-						auto item = make<RssView::implementation::Item>(title.c_str(), overridden_url.c_str());
-
-						items.Append(item);
-					}
-					catch (winrt::hresult_error const& ex)
-					{
-						OutputDebugString(L"Failed to add child as we could not find the i");
-					}
-
-
-				}
-				if (items.Size() == 0)
-				{
-					OutputDebugString(L"No items added");
-				}
-				LoadProgressIndicator().Visibility(Windows::UI::Xaml::Visibility::Collapsed);
-
-				/*SyndicationClient client;
-				SyndicationFeed feed = co_await client.RetrieveFeedAsync(uri);
-
-				for (auto const& item : feed.Items())
-				{
-					auto title = item.Title();
-					auto content = item.Content();
-					auto itm = make<RssView::implementation::Item>(title.Text().c_str(), content.Text().c_str());
-					RssItemsViewModel().Items().Append(itm);
-				}*/
-
-
-			}
-			catch (winrt::hresult_error const& ex)
-			{
-				OutputDebugStringW(L"Failed to find element in JSON");
-				OutputDebugStringW(ex.message().c_str());
-			}
-
+			OutputDebugString(L"URL was empty");
+			co_return;
 		}
+		auto items = RssItemsViewModel().Items();
+		items.Clear();
+
+		Uri uri{ url.c_str() };
+		Windows::Web::Http::HttpClient httpClient;
+		try
+		{
+			hstring respString;
+			auto response = co_await httpClient.GetAsync(uri);
+			(void)response.EnsureSuccessStatusCode();
+			respString = co_await response.Content().ReadAsStringAsync();
+			auto model = RedditModel(respString);
+			for (auto& child : model.Data().Children())
+			{
+				auto data = child.Data();
+				auto item = make<RssView::implementation::Item>(data.Title().c_str(), data.Url().c_str());
+
+				items.Append(item);
+			}
+		}
+		catch (...)
+		{
+			OutputDebugStringW(L" caught exception foo");
+		}
+
+
+		if (items.Size() == 0)
+		{
+			OutputDebugString(L"No items added");
+		}
+		LoadProgressIndicator().Visibility(Windows::UI::Xaml::Visibility::Collapsed);
+
 		co_return;
 	}
 
@@ -134,7 +122,6 @@ namespace winrt::RssView::implementation
 		}
 		co_return;
 	}
-
 }
 
 
